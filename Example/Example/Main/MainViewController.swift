@@ -64,9 +64,14 @@ private extension MainViewController {
         let text = UserDefaults.standard.text ?? ""
         let themeSetting = UserDefaults.standard.theme
         let theme = themeSetting.makeTheme()
-        let state = TextViewState(text: text, theme: theme, language: .javaScript)
+        contentView.textView.setState(.init(text: text))
         contentView.textView.editorDelegate = self
-        contentView.textView.setState(state)
+        DispatchQueue.global(qos: .background).async {
+            let state = TextViewState(text: text, theme: theme, language: .javaScript)
+            DispatchQueue.main.async {
+                self.contentView.textView.setState(state)
+            }
+        }
     }
 
     private func updateTextViewSettings() {
